@@ -4,6 +4,8 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
+	"math/rand"
+	"time"
 )
 
 var db *gorm.DB
@@ -17,5 +19,5 @@ func Init(source string) {
 	if err := db.AutoMigrate(&User{}); err != nil {
 		log.Fatalf("fail to migrate models:%v", err)
 	}
-
+	rand.Seed(time.Now().UnixNano())
 }
