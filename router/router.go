@@ -11,7 +11,7 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/login", api.Login)
 	r.POST("/register", api.Register)
-	r.DELETE("/logout", api.Logout)
+	r.DELETE("/logout/:token", api.Logout)
 
 	authed := r.Group("/api", middlewave.UserAuthentic)
 
