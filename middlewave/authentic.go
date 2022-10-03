@@ -10,7 +10,7 @@ import (
 
 func UserAuthentic(r *gin.Context) {
 	strs := strings.Fields(r.GetHeader("Authorization"))
-	if len(strs) != 2 || strs[0] != "token" {
+	if len(strs) != 2 || strs[0] != "Bearer" {
 		r.String(http.StatusUnauthorized, "未登录")
 		r.Done()
 		return
