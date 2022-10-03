@@ -20,7 +20,7 @@ func Init() {
 	if err != nil {
 		log.Fatalf("fail to open database:%v", err)
 	}
-	if err := db.AutoMigrate(&Auth{}); err != nil {
+	if err := db.AutoMigrate(&Auth{}, &User{}); err != nil {
 		log.Fatalf("fail to migrate models:%v", err)
 	}
 	rand.Seed(time.Now().UnixNano())
