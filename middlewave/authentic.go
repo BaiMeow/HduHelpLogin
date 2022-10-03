@@ -22,10 +22,8 @@ func UserAuthentic(r *gin.Context) {
 		} else {
 			r.String(http.StatusInternalServerError, "internal server fail")
 		}
+		r.Abort()
 		return
-	}
-	if id == 0 {
-
 	}
 	r.Set("id", id)
 }
