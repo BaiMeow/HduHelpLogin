@@ -5,6 +5,7 @@ import (
 	"github.com/BaiMeow/HduHelpLogin/models"
 	"github.com/BaiMeow/HduHelpLogin/router"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -13,9 +14,8 @@ func init() {
 }
 
 func main() {
-
 	conf.Init()
-	models.Init(conf.Env.GetString("database.source"))
+	models.Init()
 
 	gin.SetMode(conf.Env.GetString("mode"))
 
@@ -25,6 +25,6 @@ func main() {
 	}
 	err := server.ListenAndServe()
 	if err != nil {
-		return
+		log.Fatalln(err)
 	}
 }

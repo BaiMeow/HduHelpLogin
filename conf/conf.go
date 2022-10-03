@@ -10,7 +10,7 @@ import (
 
 var Env *viper.Viper
 
-//go:embed full_config.yaml
+//go:embed default_config.yaml
 var defaultConf []byte
 
 func Init() {

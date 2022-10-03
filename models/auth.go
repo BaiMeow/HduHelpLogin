@@ -1,55 +1,50 @@
 package models
 
 import (
+	"errors"
 	"github.com/BaiMeow/HduHelpLogin/utils"
-	"github.com/pkg/errors"
 	"gorm.io/gorm"
 	"log"
 )
 
-type User struct {
+type Auth struct {
 	Username string
 	Password []byte `gorm:"type:binary(8)"`
 	Salt     []byte `gorm:"type:binary(20)"`
 	gorm.Model
 }
 
-type ByteArray []byte
-
-var ErrExistUsername = errors.New("username is already exist")
-var ErrDatabase = errors.New("database error,please contact server manager")
-
-func CheckAuth(username, password string) (bool, error) {
-	var user User
-	result := db.Where(User{Username: username}).First(&user)
+func CheckAuth(username, password string) (uint, error) {
+	var auth Auth
+	result := db.Where(Auth{Username: username}).First(&auth)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return false, nil
+			return 0, nil
 		}
 		log.Println(result.Error)
-		return false, ErrDatabase
+		return 0, ErrDatabase
 	}
-	if *(*[20]byte)(user.Password) == utils.EncryptPassword(password, user.Salt) {
-		return true, nil
+	if *(*[20]byte)(auth.Password) != utils.EncryptPassword(password, auth.Salt) {
+		return 0, nil
 	}
-	return false, nil
+	return auth.ID, nil
 }
 
-func AddAuth(username, password string) error {
-	var user User
-	if err := db.Where(User{Username: username}).FirstOrInit(&user).Error; err != nil {
+func AddAuth(username, password string) (uint, error) {
+	var auth Auth
+	if err := db.Where(Auth{Username: username}).FirstOrInit(&auth).Error; err != nil {
 		log.Println(err)
-		return ErrDatabase
+		return 0, ErrDatabase
 	}
-	if user.ID != 0 {
-		return ErrExistUsername
+	if auth.ID != 0 {
+		return 0, nil
 	}
-	user.Salt = utils.GenSalt()
-	p1 := utils.EncryptPassword(password, user.Salt)
-	user.Password = p1[:]
-	if err := db.Create(&user).Error; err != nil {
+	auth.Salt = utils.GenSalt()
+	p1 := utils.EncryptPassword(password, auth.Salt)
+	auth.Password = p1[:]
+	if err := db.Create(&auth).Error; err != nil {
 		log.Println(err)
-		return ErrDatabase
+		return 0, ErrDatabase
 	}
-	return nil
+	return auth.ID, nil
 }

@@ -1,18 +1,23 @@
 package router
 
 import (
+	"github.com/BaiMeow/HduHelpLogin/middlewave"
 	"github.com/BaiMeow/HduHelpLogin/router/api"
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
-	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
+	r := gin.Default()
 
 	r.POST("/login", api.Login)
 	r.POST("/register", api.Register)
-	r.GET("/logout", api.Logout)
-	//todo:getUser
+	r.DELETE("/logout", api.Logout)
+
+	authed := r.Group("/api", middlewave.UserAuthentic)
+
+	authed.GET("/user", api.GetUser)
+	authed.PUT("/user", api.UpdateUser)
+	authed.PUT("/user/password")
+
 	return r
 }
