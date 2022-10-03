@@ -1,0 +1,5 @@
+mode: release
+server:
+  port: 80
+database:
+  source: data.db
