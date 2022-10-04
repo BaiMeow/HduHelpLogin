@@ -30,7 +30,6 @@ func GetUserById(id uint) (*User, error) {
 
 func UpsertUser(user *User) error {
 	result := db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
 		UpdateAll: true,
 	}).Create(user)
 	if result.Error != nil {

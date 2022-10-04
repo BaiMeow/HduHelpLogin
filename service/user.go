@@ -20,7 +20,7 @@ func GetUserById(id uint) (*models.User, error) {
 }
 
 func UpsertUser(user *models.User) error {
-	if !emailPattern.MatchString(user.Email) || !(user.Age < 200) || !(user.Phone < 20000000000) || !(user.Phone > 10000000000) {
+	if !emailPattern.MatchString(user.Email) || !(user.Age < 200) || !(user.Phone < 20000000000) || !(user.Phone > 10000000000) || user.ID == 0 {
 		return ErrWrongFormat
 	}
 	return models.UpsertUser(user)

@@ -41,6 +41,7 @@ func UpdateUser(r *gin.Context) {
 	}
 	user.Email = r.PostForm("email")
 	user.Age = uint(age)
+	user.ID = r.GetUint("id")
 	if err := service.UpsertUser(user); err != nil {
 		if errors.Is(err, service.ErrWrongFormat) {
 			r.String(http.StatusBadRequest, "invalid input")
