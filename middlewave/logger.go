@@ -1,7 +1,6 @@
 package middlewave
 
 import (
-	"fmt"
 	"github.com/BaiMeow/HduHelpLogin/log"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -25,7 +24,7 @@ func Logger() func(ctx *gin.Context) {
 		}
 		e := l.WithFields(logrus.Fields{
 			"timeStamp":  n.Format("2006/01/02 - 15:04:05"),
-			"Latency":    fmt.Sprintf("%v", n.Sub(start)),
+			"Latency":    n.Sub(start),
 			"statusCode": r.Writer.Status(),
 			"method":     r.Request.Method,
 			"clientIP":   r.ClientIP(),

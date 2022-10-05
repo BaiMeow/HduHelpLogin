@@ -9,9 +9,7 @@ import (
 func InitRouter() *gin.Engine {
 	r := gin.New()
 	gin.Default()
-	r.Use(middlewave.Logger())
-	r.Use(gin.Recovery())
-	r.Use(middlewave.AddTraceId)
+	r.Use(middlewave.Logger(), gin.Recovery(), middlewave.AddTraceId)
 	r.POST("/login", api.Login)
 	r.POST("/register", api.Register)
 	r.DELETE("/logout/:token", api.Logout)

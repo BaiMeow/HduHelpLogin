@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	gormLogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
+	"strconv"
 	"time"
 )
 
@@ -110,7 +111,7 @@ func (l *gormTraceLogger) Trace(ctx context.Context, begin time.Time, fc func() 
 			e.WithFields(logrus.Fields{
 				"fileWithLineNum": utils.FileWithLineNum(),
 				"duration":        fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6),
-				"rows":            rows,
+				"rows":            strconv.FormatInt(rows, 10),
 				"sql":             sql,
 			}).Error(err)
 		}
@@ -128,7 +129,7 @@ func (l *gormTraceLogger) Trace(ctx context.Context, begin time.Time, fc func() 
 			e.WithFields(logrus.Fields{
 				"fileWithLineNum": utils.FileWithLineNum(),
 				"duration":        fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6),
-				"rows":            rows,
+				"rows":            strconv.FormatInt(rows, 10),
 				"sql":             sql,
 			}).Warn(slowLog)
 		}
@@ -146,7 +147,7 @@ func (l *gormTraceLogger) Trace(ctx context.Context, begin time.Time, fc func() 
 			e.WithFields(logrus.Fields{
 				"fileWithLineNum": utils.FileWithLineNum(),
 				"duration":        fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6),
-				"rows":            rows,
+				"rows":            strconv.FormatInt(rows, 10),
 				"sql":             sql,
 			}).Info()
 		}

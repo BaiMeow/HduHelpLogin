@@ -35,11 +35,13 @@ var token = make(map[uuid.UUID]uint)
 
 ### 日志
 
+![a.png](https://s2.loli.net/2022/10/05/mHCRXGEMyxot1Jh.png)
+
 因为要实现traceId，gin和gorm默认的日志处理都无法直接使用，需要重新写过。对这两边的日志，均采取了先抄默认再修改的做法，从而加入traceId。
 
-日志库选用了logrus，比较经典。对于gin和gorm的日志的处理都是一致的，用`logrus.WithFields`替代了默认的`printf`的格式化输出，虽然好像改丑了但是格式上确实是更加统一了，也便于后续对日志的分析处理（如果有的话）
+日志库选用了logrus，比较经典。对于gin和gorm的日志的处理都是一致的，用`logrus.WithFields`替代了默认的`printf`的格式化输出，也便于后续对日志的分析处理（如果有的话）
 
-日志输出用了两种格式，在终端打印给人看的彩色`TextFormatter`，在文件中输出json格式便于后续处理。
+日志输出用了两种格式，在终端打印给人看的彩色，为此专门做了一个gin风格的formatter，而在文件中输出json格式便于后续处理。
 
 关于日志的记录，借用了一些别人的库实现了日志文件随时间的切换
 
