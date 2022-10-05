@@ -39,6 +39,7 @@ func Login(r *gin.Context) {
 	r.JSON(http.StatusOK, gin.H{
 		"traceId": traceId,
 		"token":   token,
+		"msg":     "登录成功",
 	})
 }
 
@@ -73,12 +74,12 @@ func Logout(r *gin.Context) {
 	if err != nil {
 		r.JSON(http.StatusBadRequest, gin.H{
 			"traceId": traceId,
-			"msg":     "invalid token",
+			"msg":     "无效token",
 		})
 		return
 	}
-	r.JSON(http.StatusBadRequest, gin.H{
+	r.JSON(http.StatusOK, gin.H{
 		"traceId": traceId,
-		"msg":     "logout success",
+		"msg":     "登出成功",
 	})
 }

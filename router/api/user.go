@@ -80,6 +80,6 @@ func UpdateUser(r *gin.Context) {
 	}
 	r.JSON(http.StatusOK, gin.H{
 		"traceId": traceId,
-		"msg":     "put success",
+		"msg":     "更新成功",
 	})
 }
