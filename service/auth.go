@@ -4,13 +4,15 @@ import (
 	"context"
 	"errors"
 	"github.com/BaiMeow/HduHelpLogin/models"
+	"github.com/dlclark/regexp2"
 	"github.com/google/uuid"
 	"regexp"
 )
 
 var (
-	UsernamePattern = regexp.MustCompile("^[a-zA-Z\\d_-]{4,16}$")
-	PasswordPattern = regexp.MustCompile("^[a-zA-Z\\d_-]{4,16}$")
+	UsernamePattern = regexp.MustCompile(`^[a-zA-Z\d_-]{4,16}$`)
+	// PasswordPattern 密码正则，最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符
+	PasswordPattern = regexp2.MustCompile(`^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$`, 0)
 )
 
 var (
@@ -22,14 +24,20 @@ var (
 var token = make(map[uuid.UUID]uint)
 
 func Login(ctx context.Context, username, password string) (uint, error) {
-	if !UsernamePattern.MatchString(username) || !PasswordPattern.MatchString(password) {
+	if !UsernamePattern.MatchString(username) {
+		return 0, ErrWrongFormat
+	}
+	if ok, _ := PasswordPattern.MatchString(password); !ok {
 		return 0, ErrWrongFormat
 	}
 	return models.CheckAuth(ctx, username, password)
 }
 
 func Register(ctx context.Context, username, password string) (uint, error) {
-	if !UsernamePattern.MatchString(username) || !PasswordPattern.MatchString(password) {
+	if !UsernamePattern.MatchString(username) {
+		return 0, ErrWrongFormat
+	}
+	if ok, _ := PasswordPattern.MatchString(password); !ok {
 		return 0, ErrWrongFormat
 	}
 	id, err := models.AddAuth(ctx, username, password)

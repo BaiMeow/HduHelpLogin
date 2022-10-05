@@ -57,10 +57,10 @@ var token = make(map[uuid.UUID]uint)
 
 application/x-www-form-urlencoded
 
-| key      | type   |
-|----------|--------|
-| username | string |
-| password | string |
+| key      | type   | description                        |
+|----------|--------|------------------------------------|
+| username | string | 4-16位，可以包含大小写字母，数字，_和-             |
+| password | string | 最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符 |
 
 #### 响应
 
@@ -83,10 +83,10 @@ application/json
 
 application/x-www-form-urlencoded
 
-| key      | type   |
-|----------|--------|
-| username | string |
-| password | string |
+| key      | type   ||
+|----------|--------|------|
+| username | string | 4-16位，可以包含大小写字母，数字，_和-             |
+| password | string | 最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符 |
 
 #### 响应
 
