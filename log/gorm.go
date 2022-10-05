@@ -36,7 +36,7 @@ type Config struct {
 }
 
 // NewGormLogger initialize gormTraceLogger
-func NewGormLogger() gormLogger.Interface {
+func NewGormLogger(level LogLevel) gormLogger.Interface {
 	var (
 		infoStr = "%s\n[info] "
 		warnStr = "%s\n[warn] "
@@ -45,7 +45,7 @@ func NewGormLogger() gormLogger.Interface {
 
 	config := Config{
 		SlowThreshold:             200 * time.Millisecond,
-		LogLevel:                  Info,
+		LogLevel:                  level,
 		IgnoreRecordNotFoundError: false,
 	}
 

@@ -3,3 +3,6 @@ server:
   port: 80
 database:
   source: data.db
+log:
+  # choose form Silent Error Warn Info, only effect on gorm log
+  level: Warn

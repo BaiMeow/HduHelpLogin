@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	log.Init()
 	conf.Init()
+	log.Init()
 	models.Init()
 
 	gin.SetMode(conf.Env.GetString("mode"))

@@ -9,7 +9,6 @@ import (
 var Logger = logrus.New()
 
 func Init() {
-	//Logger.SetFormatter(&logrus.TextFormatter{ForceColors: true, FullTimestamp: true})
 	Logger.SetFormatter(Formatter{})
 
 	writer, err := rotatelogs.New("logs/%Y%m%d.log")
