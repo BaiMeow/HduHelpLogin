@@ -169,3 +169,9 @@ application/json
 
 ### PUT `/api/user/password`
 todo
+
+## 测试服务器
+
+> 手动部署
+
+`baimeow.cn:25000`
