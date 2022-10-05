@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/BaiMeow/HduHelpLogin/models"
 	"github.com/google/uuid"
@@ -20,18 +21,18 @@ var (
 
 var token = make(map[uuid.UUID]uint)
 
-func Login(username, password string) (uint, error) {
+func Login(ctx context.Context, username, password string) (uint, error) {
 	if !UsernamePattern.MatchString(username) || !PasswordPattern.MatchString(password) {
 		return 0, ErrWrongFormat
 	}
-	return models.CheckAuth(username, password)
+	return models.CheckAuth(ctx, username, password)
 }
 
-func Register(username, password string) (uint, error) {
+func Register(ctx context.Context, username, password string) (uint, error) {
 	if !UsernamePattern.MatchString(username) || !PasswordPattern.MatchString(password) {
 		return 0, ErrWrongFormat
 	}
-	id, err := models.AddAuth(username, password)
+	id, err := models.AddAuth(ctx, username, password)
 	if err != nil {
 		return 0, err
 	}
@@ -41,19 +42,18 @@ func Register(username, password string) (uint, error) {
 	return id, nil
 }
 
-func Logout(tk string) error {
+func Logout(ctx context.Context, tk string) error {
 	uu, err := uuid.Parse(tk)
 	if err != nil {
 		return ErrInvalidToken
 	}
-
 	delete(token, uu)
 	return nil
 }
 
 // todo: token expire
 
-func GetOrAddToken(id uint) string {
+func GetOrAddToken(ctx context.Context, id uint) string {
 	for k, v := range token {
 		if v == id {
 			return k.String()
@@ -64,7 +64,7 @@ func GetOrAddToken(id uint) string {
 	return uu.String()
 }
 
-func GetIdByToken(tk string) (uint, error) {
+func GetIdByToken(ctx context.Context, tk string) (uint, error) {
 	uu, err := uuid.Parse(tk)
 	if err != nil {
 		return 0, ErrInvalidToken

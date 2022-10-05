@@ -3,9 +3,10 @@ package models
 import (
 	"errors"
 	"github.com/BaiMeow/HduHelpLogin/conf"
+	"github.com/BaiMeow/HduHelpLogin/log"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
 	"math/rand"
 	"time"
 )
@@ -16,12 +17,14 @@ var ErrRecordNotFound = errors.New("record not found")
 
 func Init() {
 	var err error
-	db, err = gorm.Open(sqlite.Open(conf.Env.GetString("database.source")), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(conf.Env.GetString("database.source")), &gorm.Config{
+		Logger: log.NewGormLogger(),
+	})
 	if err != nil {
-		log.Fatalf("fail to open database:%v", err)
+		logrus.Fatalf("fail to open database:%v", err)
 	}
 	if err := db.AutoMigrate(&Auth{}, &User{}); err != nil {
-		log.Fatalf("fail to migrate models:%v", err)
+		logrus.Fatalf("fail to migrate models:%v", err)
 	}
 	rand.Seed(time.Now().UnixNano())
 }

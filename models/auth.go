@@ -1,10 +1,10 @@
 package models
 
 import (
+	"context"
 	"errors"
 	"github.com/BaiMeow/HduHelpLogin/utils"
 	"gorm.io/gorm"
-	"log"
 )
 
 type Auth struct {
@@ -14,14 +14,13 @@ type Auth struct {
 	gorm.Model
 }
 
-func CheckAuth(username, password string) (uint, error) {
+func CheckAuth(ctx context.Context, username, password string) (uint, error) {
 	var auth Auth
-	result := db.Where(Auth{Username: username}).First(&auth)
+	result := db.WithContext(ctx).Where(Auth{Username: username}).First(&auth)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return 0, nil
 		}
-		log.Println(result.Error)
 		return 0, ErrDatabase
 	}
 	if *(*[20]byte)(auth.Password) != utils.EncryptPassword(password, auth.Salt) {
@@ -30,10 +29,9 @@ func CheckAuth(username, password string) (uint, error) {
 	return auth.ID, nil
 }
 
-func AddAuth(username, password string) (uint, error) {
+func AddAuth(ctx context.Context, username, password string) (uint, error) {
 	var auth Auth
-	if err := db.Where(Auth{Username: username}).FirstOrInit(&auth).Error; err != nil {
-		log.Println(err)
+	if err := db.WithContext(ctx).Where(Auth{Username: username}).FirstOrInit(&auth).Error; err != nil {
 		return 0, ErrDatabase
 	}
 	if auth.ID != 0 {
@@ -42,8 +40,7 @@ func AddAuth(username, password string) (uint, error) {
 	auth.Salt = utils.GenSalt()
 	p1 := utils.EncryptPassword(password, auth.Salt)
 	auth.Password = p1[:]
-	if err := db.Create(&auth).Error; err != nil {
-		log.Println(err)
+	if err := db.WithContext(ctx).Create(&auth).Error; err != nil {
 		return 0, ErrDatabase
 	}
 	return auth.ID, nil

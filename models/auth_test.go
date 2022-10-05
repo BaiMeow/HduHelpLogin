@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"github.com/BaiMeow/HduHelpLogin/conf"
 	"testing"
 )
@@ -8,7 +9,7 @@ import (
 func TestAddAuth(t *testing.T) {
 	conf.Init()
 	Init()
-	id, err := AddAuth("1234", "4567")
+	id, err := AddAuth(context.WithValue(context.Background(), "traceId", "123"), "1234", "4567")
 	if err != nil {
 		t.Error(err)
 		return
@@ -22,7 +23,7 @@ func TestAddAuth(t *testing.T) {
 func TestCheckAuth(t *testing.T) {
 	conf.Init()
 	Init()
-	id, err := CheckAuth("123", "456")
+	id, err := CheckAuth(context.WithValue(context.Background(), "traceId", "123"), "123", "456")
 	if err != nil {
 		t.Error(err)
 		return
