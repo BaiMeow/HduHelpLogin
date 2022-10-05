@@ -89,7 +89,12 @@ func (l *gormTraceLogger) Trace(ctx context.Context, begin time.Time, fc func() 
 	if l.LogLevel <= Silent {
 		return
 	}
-	e := l.WithField("traceId", ctx.Value("traceId"))
+	var e *logrus.Entry
+	if ctx.Value("traceId") != nil {
+		e = l.WithField("traceId", ctx.Value("traceId"))
+	} else {
+		e = l.Entry
+	}
 	elapsed := time.Since(begin)
 	switch {
 	case err != nil && l.LogLevel >= Error && (!errors.Is(err, ErrRecordNotFound) || !l.IgnoreRecordNotFoundError):
