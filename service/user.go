@@ -50,10 +50,12 @@ func ChangePassword(ctx context.Context, id uint, oldPassword, newPassword strin
 		return err
 	}
 	//logout
-	for k, v := range token {
+	token.Range(func(k, v any) bool {
 		if v == id {
-			delete(token, k)
+			token.Delete(k)
+			return false
 		}
-	}
+		return true
+	})
 	return nil
 }

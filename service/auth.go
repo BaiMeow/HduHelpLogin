@@ -7,6 +7,7 @@ import (
 	"github.com/dlclark/regexp2"
 	"github.com/google/uuid"
 	"regexp"
+	"sync"
 )
 
 var (
@@ -21,7 +22,7 @@ var (
 	ErrInvalidToken  = errors.New("无效的token")
 )
 
-var token = make(map[uuid.UUID]uint)
+var token sync.Map
 
 func Login(ctx context.Context, username, password string) (uint, error) {
 	if !UsernamePattern.MatchString(username) {
@@ -55,20 +56,26 @@ func Logout(ctx context.Context, tk string) error {
 	if err != nil {
 		return ErrInvalidToken
 	}
-	delete(token, uu)
+	token.Delete(uu)
 	return nil
 }
 
 // todo: token expire
 
 func GetOrAddToken(ctx context.Context, id uint) string {
-	for k, v := range token {
-		if v == id {
-			return k.String()
+	var str string
+	token.Range(func(k, v any) bool {
+		if v.(uint) == id {
+			str = k.(uuid.UUID).String()
+			return false
 		}
+		return true
+	})
+	if str != "" {
+		return str
 	}
 	uu := uuid.New()
-	token[uu] = id
+	token.Store(uu, id)
 	return uu.String()
 }
 
@@ -77,9 +84,9 @@ func GetIdByToken(ctx context.Context, tk string) (uint, error) {
 	if err != nil {
 		return 0, ErrInvalidToken
 	}
-	id, ok := token[uu]
+	id, ok := token.Load(uu)
 	if !ok {
 		return 0, ErrInvalidToken
 	}
-	return id, nil
+	return id.(uint), nil
 }
