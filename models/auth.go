@@ -45,3 +45,30 @@ func AddAuth(ctx context.Context, username, password string) (uint, error) {
 	}
 	return auth.ID, nil
 }
+
+func CheckAuthWithId(ctx context.Context, Id uint, password string) (bool, error) {
+	var auth Auth
+	result := db.WithContext(ctx).First(&auth, Id)
+	if result.Error != nil {
+		return false, ErrDatabase
+	}
+	if *(*[20]byte)(auth.Password) != utils.EncryptPassword(password, auth.Salt) {
+		return false, nil
+	}
+	return true, nil
+}
+
+func ChangeAuth(ctx context.Context, Id uint, password string) error {
+	var auth Auth
+	result := db.WithContext(ctx).First(&auth, Id)
+	if result.Error != nil {
+		return ErrDatabase
+	}
+	auth.Salt = utils.GenSalt()
+	p1 := utils.EncryptPassword(password, auth.Salt)
+	auth.Password = p1[:]
+	if err := db.WithContext(ctx).Save(&auth).Error; err != nil {
+		return ErrDatabase
+	}
+	return nil
+}

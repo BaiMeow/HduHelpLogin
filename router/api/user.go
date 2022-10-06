@@ -11,12 +11,6 @@ import (
 	"strconv"
 )
 
-type GetUserResp struct {
-	Age   uint   `json:"age"`
-	Phone uint64 `json:"phone"`
-	Email string `json:"email"`
-}
-
 func GetUser(r *gin.Context) {
 	traceId := r.Value("traceId")
 	ctx := context.WithValue(context.Background(), "traceId", traceId)
@@ -81,5 +75,24 @@ func UpdateUser(r *gin.Context) {
 	r.JSON(http.StatusOK, gin.H{
 		"traceId": traceId,
 		"msg":     "更新成功",
+	})
+}
+
+func ChangePassword(r *gin.Context) {
+	traceId := r.Value("traceId")
+	ctx := context.WithValue(context.Background(), "traceId", traceId)
+	oldPassword := r.PostForm("old")
+	newPassword := r.PostForm("new")
+	err := service.ChangePassword(ctx, r.GetUint("id"), oldPassword, newPassword)
+	if err != nil {
+		r.JSON(http.StatusBadRequest, gin.H{
+			"msg":     err.Error(),
+			"traceId": traceId,
+		})
+		return
+	}
+	r.JSON(http.StatusOK, gin.H{
+		"msg":     "ok",
+		"traceId": traceId,
 	})
 }

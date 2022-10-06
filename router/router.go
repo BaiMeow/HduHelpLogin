@@ -18,7 +18,7 @@ func InitRouter() *gin.Engine {
 
 	authed.GET("/user", api.GetUser)
 	authed.PUT("/user", api.UpdateUser)
-	authed.PUT("/user/password")
+	authed.PUT("/user/password", api.ChangePassword)
 
 	return r
 }

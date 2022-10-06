@@ -99,6 +99,8 @@ application/json
 
 ### DELETE `/logout/:token`
 
+#### 简介
+
 登出账号
 
 #### 请求
@@ -168,10 +170,45 @@ application/json
 | msg     | string | 成功时（200）返回put success，失败时描述原因 |
 
 ### PUT `/api/user/password`
-todo
+
+#### 简介
+
+修改密码
+
+#### 请求
+
+需要Authorization
+
+application/x-www-form-urlencoded
+
+| key | type   | description                            |
+|-----|--------|----------------------------------------|
+| old | string | 旧密码，最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符 |
+| new | string | 新密码，最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符 |
+
+#### 响应
+
+application/json
+
+| key     | type   | description          |
+|---------|--------|----------------------|
+| traceId | uuid   |                      |
+| msg     | string | 成功时（200）返回ok，失败时描述原因 |
+
+注意：修改密码成功后会注销账号
+
+## 部署
+
+单文件部署
+
+```shell
+git clone https://github.com/BaiMeow/HduHelpLogin.git
+cd HduHelpLogin && go build -o ./../hduHelpLogin
+cd .. && ./hduHelpLogin
+```
 
 ## 测试服务器
 
-> 手动部署
+> 手动编译
 
 `baimeow.cn:25000`

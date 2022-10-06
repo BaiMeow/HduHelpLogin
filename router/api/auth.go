@@ -17,7 +17,7 @@ func Login(r *gin.Context) {
 	if err != nil {
 		r.JSON(http.StatusInternalServerError, gin.H{
 			"traceId": traceId,
-			"msg":     fmt.Sprintf("internal server error:%v", err),
+			"msg":     err.Error(),
 		})
 		return
 	}

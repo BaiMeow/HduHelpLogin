@@ -9,6 +9,8 @@ import (
 
 var emailPattern = regexp.MustCompile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
 
+var ErrWrongOldPassword = errors.New("旧密码错误")
+
 func GetUserById(ctx context.Context, id uint) (*models.User, error) {
 	user, err := models.GetUserById(ctx, id)
 	if err != nil {
@@ -25,4 +27,33 @@ func UpsertUser(ctx context.Context, user *models.User) error {
 		return ErrWrongFormat
 	}
 	return models.UpsertUser(ctx, user)
+}
+
+func ChangePassword(ctx context.Context, id uint, oldPassword, newPassword string) error {
+	ok, err := PasswordPattern.MatchString(oldPassword)
+	if err != nil || !ok {
+		return ErrWrongFormat
+	}
+	ok, err = models.CheckAuthWithId(ctx, id, oldPassword)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return ErrWrongOldPassword
+	}
+	ok, err = PasswordPattern.MatchString(newPassword)
+	if err != nil || !ok {
+		return ErrWrongFormat
+	}
+	err = models.ChangeAuth(ctx, id, newPassword)
+	if err != nil {
+		return err
+	}
+	//logout
+	for k, v := range token {
+		if v == id {
+			delete(token, k)
+		}
+	}
+	return nil
 }
